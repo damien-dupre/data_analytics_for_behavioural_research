@@ -49,14 +49,14 @@ summary(test_gam)
 vis.gam(test_gam,theta=-55,color="heat")
 
 # better but require a better computing power ----------------------------------
-test_gamm <- mgcv::gamm(
-  value ~ s(TimeStamp, by = type),
-  correlation=corAR1(),
-  data = automatic_recognition_tidy,
-  method = "REML",
-  random=list(gender=~1)
-)
-
-plot(test_gamm$gam)
-
-summary(test_gamm$gam)
+# test_gamm <- mgcv::gamm(
+#   value ~ s(TimeStamp, by = type),
+#   correlation=corAR1(),
+#   data = automatic_recognition_tidy,
+#   method = "REML",
+#   random=list(gender=~1)
+# )
+# 
+# plot(test_gamm$gam)
+# 
+# summary(test_gamm$gam)
