@@ -71,7 +71,7 @@ afinn_sentiments <- get_sentiments("afinn")
 jane_tidy_words %>% 
   inner_join(afinn_sentiments) %>%
   group_by(book, chapter) %>% 
-  summarise(avg_score = mean(score)) %>%
+  summarise(avg_score = mean(value)) %>%
   ggplot(aes(chapter, avg_score, group=book, colour = book)) + 
   geom_line() + 
   geom_smooth(se = FALSE)
