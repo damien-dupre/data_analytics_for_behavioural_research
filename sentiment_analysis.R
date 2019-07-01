@@ -6,6 +6,8 @@
 library(tidyverse)
 library(janeaustenr)
 library(tidytext)
+library(textdata)
+
 
 # text example -----------------------------------------------------------------
 text <- c(
@@ -48,24 +50,19 @@ jane_tidy_words %>%
   geom_line() + 
   geom_smooth(se=FALSE)
 
-# access to nrc sentiment lexicon ----------------------------------------------
-nrc_joy <- get_sentiments("nrc") %>%
-  filter(sentiment == "joy")
+# access to bing sentiment lexicon ----------------------------------------------
+bing_lexicon <- get_sentiments("bing")
 
 # evaluate sentiment for all words ---------------------------------------------
-jane_tidy_joy <- jane_tidy_words %>% 
-  group_by(book,chapter) %>%
-  mutate(words = n()) %>%
-  inner_join(nrc_joy) %>% 
-  group_by(book,chapter,words) %>%
-  summarise(joy_words = n()) %>% 
-  mutate(joy_rate = joy_words/words) 
+jane_austen_sentiment <- jane_tidy_words %>%
+  inner_join(bing_lexicon) %>%
+  count(book, index = linenumber %/% 80, sentiment) %>%
+  spread(sentiment, n, fill = 0) %>%
+  mutate(sentiment = positive - negative)
 
-jane_tidy_joy %>% 
-  ggplot(aes(x=chapter,y=joy_rate,group=book,colour=book)) + 
-  geom_line() +
-  geom_smooth(se = FALSE) + 
-  scale_y_continuous(labels = scales::percent_format(accuracy = 0.5))
+ggplot(jane_austen_sentiment, aes(index, sentiment, fill = book)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~book, ncol = 2, scales = "free_x")
 
 # access to afinn sentiment lexicon --------------------------------------------
 afinn_sentiments <- get_sentiments("afinn")
