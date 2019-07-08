@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Data Analytics for Behavioural Research</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Damien Dupré" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/metropolis.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/metropolis-fonts.css" rel="stylesheet" />
+    <script src="libs/htmlwidgets-1.3/htmlwidgets.js"></script>
+    <script src="libs/dagre-0.0.1/dagre.min.js"></script>
+    <script src="libs/lodash-3.7.0/lodash.js"></script>
+    <script src="libs/nomnoml-0.2.0/nomnoml.js"></script>
+    <script src="libs/nomnoml-binding-0.1.0.9000/nomnoml.js"></script>
+    <script src="libs/kePrint-0.0.1/kePrint.js"></script>
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Data Analytics for Behavioural Research
+## ECMCRC Summer School on Behavioral and Neuroscientific Research for Economics and Finance
+### Damien Dupré
+### Dublin City University, July 2nd 2019
+
+---
+
+
+
+
+# Programme
+
+* Data Analytics for Behavioural Research (I)
+  * The (data) science of emotions
+* Data Analytics for Behavioural Research (II)
+  * Introduction to data science with R
+* Data Analytics for Behavioural Research (III)
+  * Gentle introduction to emotion analysis
+    * Sentiment Analysis
+    * Facial Expression
+    * Physiology
+
+---
+class: inverse, center, middle
+
+# The (data) science of emotions
+
+---
+
+# Why measuring emotional experience?
+
+The emotional experience determines our perceptions and leads our decisions 
+* In every life (e.g. the Phineas Gage Case; Damasio, 1994)
+* In consumer behaviors (Dumaine 1991, p. 86) 
+    * A first evaluative process was trigged from aesthetical perceptions (Mahlke, 2008)
+    * Emotions responses were generated following these process (Hong &amp; Wyer, 1998; Ko, Sung &amp; Yoon, 2008)
+    * Choices and decisions are made according both cognitive and emotional treatment (Bloch, 1995)
+
+---
+
+# What Emotions are?
+
+“Everyone knows what an emotion is, until asked to give a definition. Then, it seems no one knows.” (Fehr and Russell, 1984) 
+
+&lt;video width="500" height="500" controls&gt;
+  &lt;source src="./img/videoplayback.mp4" type="video/mp4"&gt;
+&lt;/video&gt; 
+
+---
+
+# History of Emotion Science
+
+&lt;img src="./img/emotion_timeline.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# What Emotions are not?
+
+* Emotions are from the affect / affective state family as well as moods and attitudes.
+* Affective state refers to "refers to valenced (good versus bad) states" (Gross, 2010, p. 212).
+
+<div id="htmlwidget-d0746f2ace5598850d5e" style="width:504px;height:504px;" class="nomnoml html-widget"></div>
+<script type="application/json" data-for="htmlwidget-d0746f2ace5598850d5e">{"x":{"code":"\n  #fill: #FEFEFF\n  #lineWidth: 1\n  #zoom: 4\n  #direction: right\n   #stroke: orange\n#direction: down\n#align: center\n\n[Affect]->[Attitude]\n[Affect]->[Emotions]\n[Affect]->[Moods]","svg":false},"evals":[],"jsHooks":[]}</script>
+
+---
+
+# What Emotions are not?
+
+* Attitudes are **relatively stable beliefs about the goodness or badness of something or someone**; they bias how a person will think about, feel towards, and behave regarding that thing or person (Frijda, 1994). 
+
+* Moods are **less stable than attitudes**, and unlike attitudes, often **do not have specific objects**. Changes in feeling tone are predominant, and moods seem to bias cognition more than action (Siemer, 2005). 
+
+* Emotions are **the shortest** lived of these three affective processes. They are responses to situations that are perceived as **relevant to an individual’s current goals**, and consist of appraisals (or ways of construing the situation) which give rise to loosely coordinated changes in experiential, behavioral, and physiological response channels (Levenson, 1999).
+
+---
+
+# 7 characteristics of emotions
+
+From Scherer (2005)
+
+&lt;table class="table" style="font-size: 12px; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Characteristic &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Description &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Event focus &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; “something happens to the organism that stimulates or triggers a response after having been evaluated for its significance” &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Appraisal driven &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; “eliciting event and its consequences must be relevant to major concerns of the organism” &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Response synchronization &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; “all or most of the subsystems of the organism must contribute to response preparation” &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Rapidity of change &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; “emotion processes are undergoing constant modification allowing rapid readjustment to changing circumstances or evaluations” &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Behavioural impact &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; “Emotions prepare adaptive action tendencies and their motivational underpinnings” &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Intensity &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; “the response patterns and the corresponding emotional experience [is expected] to be relatively high” &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Duration &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; “must be relatively short in order not to tax the resources of the organism and to allow behavioural flexibility” &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Functions of Emotions
+
+&lt;img src="./img/emotion_functions.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+Scherer, K. R. (2005). What are emotions? And how can they be measured?. Social science information, 44(4), 695-729.
+
+---
+
+# Function 1: Evaluation 
+
+* Emotion and cognition are interacting systems
+  * Emotions helps to identify the valence of an object/event and provides solutions to behave accordingly (decision-making process).
+  * Example of Phineas Gage (Damasio, 1994)
+
+* Stimulus Evaluation Checks (Scherer, 2001)
+    * Relevance according goals and needs
+    * Implication of consequences
+    * Potential Coping of consequences
+    * Significance for norms, values and standards
+
+&lt;img src="./img/sec_figure.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Function 2: System regulation 
+
+* Emotions modulate and influence physiological rhythms
+    * Heart Rate, Heart Rate Variability
+    * Breathing Rate
+    * Skin Temperature
+    * Electrodermal Activity
+    * ...
+
+---
+
+# Function 3: Preparation of actions
+
+* Emotions enable fast and adaptive response to the triggered event
+    * Principle of Action Tendency (Frijda, 1986)
+    * fight or flight
+
+---
+
+# Function 4: Communication
+
+* Facial Expressions
+    * Duchenne de Boulogne (1862) 
+    * Darwin (1889)
+    * Ekman (1968)
+        * Create Facial Action Unit System (FACS)
+        * Facial Expressions of Emotions (EmFACS)
+
+Only 6 (7) universal facial expressions of emotion
+
+---
+
+# Function 4: Communication
+
+* Debate: what do facial expressions convey?
+  * Action Readiness (Frijda, 1986)
+  * States of Cognitive Appraisal (Scherer, 2005)
+  * Feeling states (Ekman, 1984)
+  * Social message (Fridlund, 1994)
+
+&lt;video width="400" height="400" controls&gt;
+  &lt;source src="./img/DynEmo Fear.mp4" type="video/mp4"&gt;
+&lt;/video&gt; 
+
+---
+
+# Function 5: Monitoring internal states
+
+* Access to psycho-physiological changes related to the emotional experience
+* Give a meaning to these changes and which allow to voluntarily regulate the emotional state
+
+&lt;img src="./img/emotion_monitoring.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Function 5: Monitoring internal states
+
+* Categorical access
+  * Ekman's 6 basic emotions
+  * Plutchik's Wheel of Emotions
+  * Geneva Emotion Wheel model 1/2/3/...
+  * ...
+  
+* Dimensional access (Russell, 1984)
+  * Valence, Arousal, Dominance
+  * Circumplex Model of Affect
+  * Self Assessment Manikin (SAM)
+
+---
+
+# Psychological Structure of Emotions
+
+* Basic Emotion Theory (Ekman, 1971)?
+* Constructionist Theory (Russell, 1980)?
+* Appraisal Theory (Scherer, 2005)?
+
+---
+
+# Component Process Model of Emotions
+
+And applications to product testing
+
+* Subjective feeling
+  * e.g. Desmet, Hekkert, &amp; Hillen (2003)
+* Cognitive appraisal
+  * e.g. Herbeth &amp; Blumenthal (2013)
+* Action readiness
+  * Schoen &amp; Crilly (2014)
+* Expressive Patterns
+  * Mahlke (2008)
+* Physiological reactions
+  * Carbon, Michael, &amp; Leder (2008)
+
+---
+
+# Component Process Model of Emotions
+
+<div id="htmlwidget-c503293c60c8cd7b447f" style="width:504px;height:504px;" class="nomnoml html-widget"></div>
+<script type="application/json" data-for="htmlwidget-c503293c60c8cd7b447f">{"x":{"code":"\n  #fill: #FEFEFF\n  #lineWidth: 1\n  #zoom: 4\n  #direction: right\n   #stroke: orange\n#align: center\n\n[Emotion|\n  [Cognitive Component]->[Motivational Component]\n  [Cognitive Component]->[Physiological Component]\n  [Cognitive Component]->[Expressive Component]\n  [Motivational Component]->[Subjective Component]\n  [Physiological Component]->[Subjective Component]\n  [Expressive Component]->[Subjective Component]\n]\n\n[<abstract>Trigger Event]--:>[Emotion]","svg":false},"evals":[],"jsHooks":[]}</script>
+
+---
+
+# Component Process Model of Emotions
+
+Emotion is defined as “an **episode of interrelated, synchronized changes** in the states of **all or most of the five organismic subsystems** in **response to the evaluation of an external or internal stimulus** event as relevant to major concerns of the organism” (Scherer, 1987)
+
+---
+class: inverse, center, middle
+
+# How to measure emotions?
+
+---
+
+# Self-reports
+
+* Verbal vs. Non-verbal
+* Warning: Access to inner states is biased
+
+<div id="htmlwidget-d093aedf5df79831b4bf" style="width:504px;height:504px;" class="nomnoml html-widget"></div>
+<script type="application/json" data-for="htmlwidget-d093aedf5df79831b4bf">{"x":{"code":"\n  #fill: #FEFEFF\n  #lineWidth: 1\n  #zoom: 4\n  #direction: right\n   #stroke: black\n#align: center\n#.box: fill=orange\n\n[Emotion|\n  [<box>Cognitive Component]->[<box>Motivational Component]\n  [<box>Cognitive Component]->[<box>Physiological Component]\n  [<box>Cognitive Component]->[<box>Expressive Component]\n  [<box>Motivational Component]->[<box>Subjective Component]\n  [<box>Physiological Component]->[<box>Subjective Component]\n  [<box>Expressive Component]->[<box>Subjective Component]\n]","svg":false},"evals":[],"jsHooks":[]}</script>
+
+---
+
+# Sentiment analysis
+
+Attribute an emotional coefficient to a word or a series of word (e.g., tweets, reviews, books)
+* Can be categorical  for basic emotions
+* Can be dimensional with valence and arousal
+
+<div id="htmlwidget-324d6682a04ac056a27e" style="width:504px;height:504px;" class="nomnoml html-widget"></div>
+<script type="application/json" data-for="htmlwidget-324d6682a04ac056a27e">{"x":{"code":"\n  #fill: #FEFEFF\n  #lineWidth: 1\n  #zoom: 4\n  #direction: right\n   #stroke: black\n#align: center\n#.box: fill=orange\n\n[Emotion|\n  [Cognitive Component]->[Motivational Component]\n  [Cognitive Component]->[Physiological Component]\n  [Cognitive Component]->[Expressive Component]\n  [Motivational Component]->[<box>Subjective Component]\n  [Physiological Component]->[<box>Subjective Component]\n  [Expressive Component]->[<box>Subjective Component]\n]","svg":false},"evals":[],"jsHooks":[]}</script>
+
+---
+
+# Physiological Sensors
+
+Wired vs. Wireless
+
+<div id="htmlwidget-0606e2fa603c4c1e6ff0" style="width:504px;height:504px;" class="nomnoml html-widget"></div>
+<script type="application/json" data-for="htmlwidget-0606e2fa603c4c1e6ff0">{"x":{"code":"\n  #fill: #FEFEFF\n  #lineWidth: 1\n  #zoom: 4\n  #direction: right\n   #stroke: black\n#align: center\n#.box: fill=orange\n\n[Emotion|\n  [Cognitive Component]->[<box>Motivational Component]\n  [Cognitive Component]->[<box>Physiological Component]\n  [Cognitive Component]->[<box>Expressive Component]\n  [<box>Motivational Component]->[Subjective Component]\n  [<box>Physiological Component]->[Subjective Component]\n  [<box>Expressive Component]->[Subjective Component]\n]","svg":false},"evals":[],"jsHooks":[]}</script>
+
+---
+
+# Observation
+
+Human vs. Automatic
+
+<div id="htmlwidget-81731cd79d02104460e6" style="width:504px;height:504px;" class="nomnoml html-widget"></div>
+<script type="application/json" data-for="htmlwidget-81731cd79d02104460e6">{"x":{"code":"\n  #fill: #FEFEFF\n  #lineWidth: 1\n  #zoom: 4\n  #direction: right\n   #stroke: black\n#align: center\n#.box: fill=orange\n\n[Emotion|\n  [Cognitive Component]->[<box>Motivational Component]\n  [Cognitive Component]->[Physiological Component]\n  [Cognitive Component]->[<box>Expressive Component]\n  [<box>Motivational Component]->[Subjective Component]\n  [Physiological Component]->[Subjective Component]\n  [<box>Expressive Component]->[Subjective Component]\n]","svg":false},"evals":[],"jsHooks":[]}</script>
+
+---
+class: inverse, center, middle
+
+# Introduction to data science with R
+
+---
+
+# Rstudio Cloud
+
+1. Go to: https://rstudio.cloud/
+2. Sign up
+3. In your workspace, create a new project and launch it (can take 1 or 2 minutes)
+
+---
+
+# RStudio IDE
+
+Made of 4 panels:
+* **Console**: where the results are printed
+* **Code Editor**: where you have to write your code
+* **Workspace**: where the objects are stored
+* **Files, Plots, Package, Help and Viewer**: where datascience materials are
+
+&lt;p style="text-align:center;"&gt;&lt;img src="http://www.sthda.com/sthda/RDoc/images/rstudio.png" width="400"&gt;
+---
+
+# From Science to Data Science in 4 clicks
+
+* In RStudio IDE
+
+  * Tools &gt; Global Options ... &gt; Appearance 
+  * Scroll down to "Vibrant Ink" and click Apply &gt; OK
+  
+---
+
+&lt;p style="text-align:center;"&gt;**Welcome to ...**
+
+--
+background-image: url(https://media2.giphy.com/media/10zxDv7Hv5RF9C/giphy.gif?cid=3640f6095c7801104a4c3632591e5e42)
+
+---
+
+# Introduction to data science with R
+
+R in 3 points:
+ * Create objects made of elements 
+ * Use of actions on objects to change them
+ * Display and save the results of your actions
+
+---
+
+# What is R?
+
+* R is a programming language
+
+* R is object oriented 
+  * **Arrow assigment** to create objects: `&lt;-`
+
+Some examples of assigment:
+
+
+```r
+numerics &lt;- 2
+
+characters &lt;- "two"
+
+vectors &lt;- c(2,"two")
+
+arrays &lt;- 1:2
+
+dataframes &lt;- data.frame(col1 = c("one","two"), col2 = c(1,2))
+
+functions &lt;- function(x){x^2}
+
+plots &lt;- ggplot(data = dataframes, aes(x = col1, y = col2)) +
+  geom_point()
+```
+
+---
+
+# What is R?
+
+R is a case-sensitive language, x and X do not refer to the same object
+
+Object names:
+- can be created using letters, digits and some special characters ( _ and . but not -)
+- must not start with a digit or a . followed by a digit.
+- avoid names already used by the system, e.g. c, q, t, C, D, F, I, T, diff, ...)
+
+Be carefull, R doen't save objects, you have to save the code to recreate them everytime.
+
+---
+
+# How does R work?
+
+Users enter a line with a command after the prompt and press `Enter`.
+
+The programme carries out the command and prints the result if relevant. For example, if the expression 2 + 2 is typed in, the following is printed in the R console:
+
+
+```r
+2 + 2
+```
+
+```
+## [1] 4
+```
+
+&lt;mark&gt;The prompt `&gt;` indicates that R is ready for another command&lt;/mark&gt;  
+* &lt;mark&gt;If a command is incomplete at the end of a line, the prompt + is displayed&lt;/mark&gt; on subsequent lines until the command is syntactically complete
+
+
+
+* If the console shows a &lt;mark&gt;red icone in the top right corner, the console is currently processing your script&lt;/mark&gt;
+
+
+
+
+* If the shows a &lt;mark&gt;red "stop" button, your code has produced an error and you need to click on it to exit the debbug mode&lt;/mark&gt;
+
+---
+
+![](https://support.rstudio.com/hc/en-us/article_attachments/201608498/shiny-debugging.png)
+---
+
+# R keyboard short cuts and syntax
+
+--
+
+Short cuts
+
+* `Ctl + Enter` : process line
+* `Alt + -` : insert arrow (&lt;-)
+* `Ctl + L` : clear console
+
+--
+
+Syntax
+
+* `#` to comment a line
+  * used to explaine the what and why of the code
+  * used to disable a code line (can be done with Ctl+Maj+C)
+  
+* `?keyword` looks for help in the packages in use
+* `??keyword` looks for help in all the packages installed
+
+---
+
+# Object Classes
+
+* numeric
+   * 2, 5.3, 10^2
+
+* character
+  * "one", "One", "ONE"
+
+* boolean
+  * TRUE and FALSE
+
+---
+
+# Basic Operators
+
+* Arithmetic Operators include:
+
+|Operator |Description             |
+|---------|------------------------|
+|+        |addition                |
+|-        |subtraction             |
+|*        |multiplication          |
+|/        |division                |
+  
+* Arithmetic Operators include:
+
+|Operator |Description             |
+|---------|------------------------|
+|&gt; and &lt;  |greater than            |
+|&gt;= and &lt;=|greater than or equal to|
+|==       |exactly equal to        |
+|!=       |not equal to            |
+
+---
+
+# Basic Examples Using operators
+
+
+```r
+2
+
+2 + 3 
+
+2 &gt; 3
+```
+
+---
+
+# Basic Examples Using Assigment
+
+
+```r
+numeric_two &lt;- 2 # value 2 assigned to numeric_two object
+numeric_two
+
+numeric_three &lt;- 3 # value 3 assigned to numeric_three object
+numeric_three
+
+numeric_two + numeric_three
+
+character_two &lt;- "Two" # character "Two" assigned to character_two object
+character_two
+```
+
+## Whoops
+
+
+```r
+character_two + numeric_three
+```
+
+---
+
+# Using Functions
+
+Functions are transforming object by diffining their arguments
+
+Have a look at our first function:
+
+
+```r
+?c
+
+# Description: This is a generic function which combines its arguments.
+# Examples
+# c(1,7:9)
+# c(1:5, 10.5, "next")
+```
+
+Most usefull functions
+
+
+```r
+install.packages("PackageName")
+
+library(PackageName)
+
+getwd()
+setwd("C:/path/to/your/folder")
+
+str(ObjectName)
+```
+
+WARNING: path in R are using UNIX system so Apple and Linux users are fine but Windows users have to replace `\` by `/` in any path.
+
+Avoid manual conversion in windows by using the little tool called "Path Copy Copy" https://pathcopycopy.github.io/
+
+---
+
+# Using Packages
+
+Functions are implemented in Package
+
+* Some packages are already installed by default (e.g., base, stats, ...)
+
+* Most of them have to be downloaded 
+    * From CRAN
+    * From GitHub
+    
+Example of packages very useful
+- dplyr and tidyr for data wrangling
+- ggplot2 for data visualisation
+- leveen for SEM analysis
+- ...
+
+To access all of the functions a particular package, it must be downloaded once and loaded into the workspace each time you are starting a new session. For example, to load the tidyverse package:
+
+
+```r
+install.package("tidyverse") # once
+
+library(tidyverse) # at the begining of each script to be loaded every new session
+```
+
+---
+
+# Basic Objects
+
+* Vector
+
+* Factor
+
+* Array
+
+* Matrix
+
+* Data Frame
+
+* List
+
+---
+
+# Vectors
+
+Vectors are the simplest type of object in R. There are 3 main
+types of vectors:
+* Numeric vectors
+* Character vectors
+* Boolean vectors
+* Complex vectors
+
+
+```r
+numeric_vector &lt;- c(10.4, 5.6, 3.1, 6.4, 21.7) # Numeric vector
+numeric_vector
+
+character_vector &lt;- c("one", "two", "three") # Character vector
+character_vector
+
+boolean_vector &lt;- c(TRUE, FALSE, TRUE) # Boolean vector
+boolean_vector
+
+heterogenous_vector &lt;- c("one", 2, TRUE) # Heterogenous vector
+heterogenous_vector
+```
+
+* Missing Values
+
+In some cases the entire contents of a vector may not be known. For example, missing data from a particular data set. A place can be reserved for this by assigning it the special value NA.
+
+---
+# Indexing and Modifying Vectors
+
+To access to a specific value (also called indexing) use `ObjectName[number]`
+
+
+```r
+numeric_vector[1]
+
+character_vector[3]
+```
+
+To alter the contents of a vector, similar methods can be used.
+
+
+```r
+# For example, to modify the 1st element of numeric_vector and assign it a value 5
+numeric_vector[1] &lt;- 5
+numeric_vector
+```
+
+---
+
+# Factors
+
+A factor is a special type of vector used to represent character data (e.g. gender, social class, etc.) ordered according to numerical values
+
+
+```r
+character_vector
+
+character_vector &lt;- as.factor(character_vector)
+
+character_vector
+```
+
+Example
+
+&gt;Consider a survey that has data on 200 females and 300 males. If the first 200 values are from females and the next 300 values are from males, one way of representing this is to create a vector
+
+
+```r
+# Vector of characters
+gender &lt;- c(rep("female", 200), rep("male", 300))
+# To change this into a factor
+gender &lt;- as.factor(gender) 
+# The factor gender is stored as 1 female and 2 male called a level of the factor.
+
+# To determine the levels of a factor the function levels() can be used:
+levels(gender)
+```
+
+---
+
+# Array
+
+Is the the case of vector made of numeric values
+
+---
+
+# Matrix
+
+A matrix is a two-dimensional array of numbers, it has rows and columns
+
+In R matrices are represented as vectors with dimensions.
+
+
+```r
+m &lt;- rnorm(12) # Creates a vector of 12 random numbers
+m
+
+matrix(m, nrow=3, ncol=4, byrow=T) 
+# Causes R to treat the vector of 12 numbers as a 3 x 4 matrix.
+```
+
+---
+
+# DataFrame
+
+The most important object in R!
+
+DataFrame are spreedsheet made of rows and columns
+
+Columns can have different class (e.g., character columns and numeric columns)
+
+
+```r
+dataframes &lt;- data.frame(col1 = c("one","two"), col2 = c(1,2))
+dataframes
+```
+
+Values from dataframe can be accessed using `DataframeName[RowNumber,ColNumber]`
+
+
+```r
+dataframes[1,1] 
+# gives the value in the 1st row and 1st column of "dataframes" object
+
+dataframes[2,1] 
+# gives the value in the 2nd row and 1st column of "dataframes" object
+
+dataframes[1,2] 
+# gives the value in the 1st row and 2nd column of "dataframes" object
+```
+
+Columns from dataframe can be accessed using `DataframeName$ColName`
+
+
+```r
+dataframes$col1
+
+dataframes$col2
+```
+
+---
+
+# Indexing Data Frames
+
+By leaving row or column number empty you select all the values for the row or column indicated.
+
+
+```r
+dataframes[2,] 
+# returns all the columns value for the 2nd row
+
+dataframes[,2] 
+# returns all the rows in the 2nd column (same as using dataframes$col2)
+```
+
+---
+
+# Lists
+
+Lists are an ordered collection of object which can have different classes
+
+
+```r
+lists &lt;- list(name="Fred", wife="Mary", no.children=3, child.ages=c(4,7,9)) 
+# list of 4 objects
+```
+
+&gt;In general you don't want to deal with lists because they are very difficult to handle
+
+---
+class: center, middle
+
+# Read and Save Data
+
+---
+
+# How to use external data
+
+Dataframe objects (object type spreedsheet containing data) can be 
+* Created in R
+* Uploaded from an external file
+
+If the dataframe is uploaded from an external file you can 
+* Use R studio IDE with the `Files` panel (for beginners)
+* Use a funtion to read the type of file (natural way)
+
+The function use depend on the type of file
+
+
+```r
+text_file &lt;- read.delim("C:/path/to/your/file.txt") 
+# create dataframe object from a text file
+
+csv_file &lt;- read.csv("C:/path/to/your/file.csv") 
+# create dataframe object from a csv file
+```
+
+Note on file types: always try to save to .csv which is the most common data file type. So avoid to upload .xls/.xlsx files or even spss files
+
+---
+
+# How to save data 
+
+Saving in RStudio IDE is only for script documents in .R format. To save data from dataframe object you have to use a dedicated function like `write.csv()` with several arguments:
+* x : the object to be written
+* file : the path where the object has to be written with object name and extension
+* row.names : a logical value (TRUE or FALSE) indicating whether the row names of x are to be written along with x
+
+
+```r
+dataframes &lt;- data.frame(col1 = c("one","two"), col2 = c(1,2))
+
+write.csv(
+  x = dataframes, 
+  file = "C:/path/to/object/dataframes.csv", 
+  row.names = FALSE)
+```
+
+---
+
+# How to solve your pRoblems
+
+1. Look at your error
+  * If it's obvious, solve it by yourself
+  * If it's not obvious, copy paste the error in google
+  
+2. Look at your object (`str(ObjectName)`)
+
+3. Look at the function (documentation)
+
+4. Look at the web
+  * Google "R how to ..."
+  * Stack Overflow
+
+---
+class: center, middle
+
+# Your are now a UseR!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
