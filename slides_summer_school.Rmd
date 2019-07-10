@@ -84,7 +84,7 @@ knitr::include_graphics("./img/emotion_timeline.png")
 * Emotions are from the affect / affective state family as well as moods and attitudes.
 * Affective state refers to "refers to valenced (good versus bad) states" (Gross, 2010, p. 212).
 
-```{nomnoml}
+```{nomnoml, fig.width=12, fig.height=8}
 #stroke: orange
 #direction: down
 #align: center
@@ -254,7 +254,7 @@ And applications to product testing
 
 # Component Process Model of Emotions
 
-```{nomnoml}
+```{nomnoml, fig.width=12, fig.height=8}
 #stroke: orange
 #align: center
 
@@ -286,6 +286,8 @@ class: inverse, center, middle
 # Self-reports
 
 * Verbal vs. Non-verbal
+  * Verbal Scales: 6 Basic Emotions, PANAS, Geneva Emotion Wheel ...
+  * Non-Verbal Scales: SAM, PrEmo, Affect button ...
 * Warning: Access to inner states is biased
 
 ```{nomnoml}
@@ -331,6 +333,9 @@ Attribute an emotional coefficient to a word or a series of word (e.g., tweets, 
 # Physiological Sensors
 
 Wired vs. Wireless
+* wristbands: Empatica, Shimmer, Apple watch, all fitness watches ...
+* belts and shirts: Biopack, Equivital, Hexoskin ...
+* other: Notch, iMotions ...
 
 ```{nomnoml}
 #stroke: black
@@ -352,6 +357,8 @@ Wired vs. Wireless
 # Observation
 
 Human vs. Automatic
+* Human annotation using Emotions, FACS ... with annotation software (ELAN, ANVIL, the Observer, ...)
+* Automatic recognition using Emotions, FACS ... with OpenFace, Affectiva, FaceReader ...
 
 ```{nomnoml}
 #stroke: black
@@ -489,6 +496,8 @@ summary(lm(y~x, test))
 * If the shows a <mark>red "stop" button, your code has produced an error and you need to click on it to exit the debbug mode</mark>
 
 ---
+
+# RStudio debug mode
 
 ![](https://support.rstudio.com/hc/en-us/article_attachments/201608498/shiny-debugging.png)
 ---
@@ -810,7 +819,7 @@ lists <- list(name="Fred", wife="Mary", no.children=3, child.ages=c(4,7,9))
 >In general you don't want to deal with lists because they are very difficult to handle
 
 ---
-class: center, middle
+class: inverse, center, middle
 
 # Read and Save Data
 
@@ -923,14 +932,16 @@ unnest_tokens(
 
 * Load libraries
 
-```{r, eval=FALSE, echo=TRUE}
+```{r, echo=TRUE}
+library(tidyverse)
+library(tidytext)
 library(janeaustenr)
 library(textdata)
 ```
 
 * Some data wrangling
 
-```{r, eval=FALSE, echo=TRUE}
+```{r, echo=TRUE}
 jane_tidy <- austen_books() %>%
   group_by(book) %>%
   mutate(linenumber = row_number()) %>% 
@@ -941,14 +952,18 @@ jane_tidy <- austen_books() %>%
 
 * Remove stop word
 
-```{r, eval=FALSE, echo=TRUE}
+```{r, echo=TRUE}
 jane_tidy_words <- jane_tidy %>% 
   anti_join(stop_words)
 ```
 
+---
+
+# Dealing with real text data
+
 * Some plots
 
-```{r, eval=FALSE, echo=TRUE}
+```{r, echo=TRUE, fig.width=12, fig.height=5}
 jane_tidy_words %>% 
   filter(book == "Emma") %>% 
   group_by(chapter) %>% 
@@ -973,13 +988,13 @@ Three of these lexicons are based on unigrams, i.e., single words.
 
 * Download Emotion Lexicon
 
-```{r, eval=FALSE, echo=TRUE}
+```{r, echo=TRUE}
 bing_lexicon <- get_sentiments("bing")
 ```
 
 * Attribute the emotionality to all the words
 
-```{r, eval=FALSE, echo=TRUE}
+```{r, echo=TRUE}
 jane_austen_sentiment <- jane_tidy_words %>%
   inner_join(bing_lexicon) %>%
   count(book, index = linenumber %/% 80, sentiment) %>%
@@ -987,9 +1002,13 @@ jane_austen_sentiment <- jane_tidy_words %>%
   mutate(sentiment = positive - negative)
 ```
 
+---
+
+# Sentiment analysis by steps
+
 * Plot the results
 
-```{r, eval=FALSE, echo=TRUE}
+```{r, echo=TRUE, fig.width=12, fig.height=4}
 ggplot(jane_austen_sentiment, aes(index, sentiment, fill = book)) +
   geom_col(show.legend = FALSE) +
   facet_wrap(~book, ncol = 2, scales = "free_x")
@@ -1001,17 +1020,17 @@ ggplot(jane_austen_sentiment, aes(index, sentiment, fill = book)) +
 
 * Download the AFINN Lexicon
 
-```{r, eval=FALSE, echo=TRUE}
+```{r, echo=TRUE}
 afinn_sentiments <- get_sentiments("afinn")
 ```
 
 * Plot the results
 
-```{r, eval=FALSE, echo=TRUE}
+```{r, echo=TRUE, fig.width=12, fig.height=3}
 jane_tidy_words %>% 
   inner_join(afinn_sentiments) %>%
   group_by(book, chapter) %>% 
-  summarise(avg_score = mean(value)) %>%
+  summarise(avg_score = mean(score)) %>%
   ggplot(aes(chapter, avg_score, group=book, colour = book)) + 
   geom_line() + 
   geom_smooth(se = FALSE)
@@ -1044,7 +1063,7 @@ A process in 3 steps:
 
 Result = recognition probability for a labelled category (e.g. Action Unit, Basic Emotion, ...)
 
-```{r out.width = "100%"}
+```{r out.width = "30%"}
 knitr::include_graphics("./img/automatic_steps.png") 
 ```
 
@@ -1084,18 +1103,18 @@ knitr::include_graphics("./img/dynemo_video.png")
 
 ---
 
-# Accessing the data and data wrangling
+# Accessing data and data wrangling
 
 * Libraries
 
-```{r, eval=FALSE, echo=TRUE}
+```{r, echo=TRUE}
 library(tidyverse)
 library(mgcv)
 ```
 
 * Code
 
-```{r, eval=FALSE, echo=TRUE}
+```{r, echo=TRUE}
 automatic_recognition_tidy <- 
   "https://raw.githubusercontent.com/damien-dupre/data/master/automatic_recognition_data.csv" %>% 
   readr::read_csv() %>% 
@@ -1110,9 +1129,13 @@ automatic_recognition_tidy <-
   dplyr::mutate(type = as.factor(type))
 ```
 
+---
+
+# Accessing data and data wrangling
+
 * Basic plot
 
-```{r, eval=FALSE, echo=TRUE}
+```{r, echo=TRUE, fig.width=12, fig.height=4}
 automatic_recognition_tidy %>% 
   ggplot(aes(TimeStamp,value, color = emotion_expressed)) + 
   geom_line() +
@@ -1125,19 +1148,31 @@ automatic_recognition_tidy %>%
 
 * Non linear regression
 
-```{r, eval=FALSE, echo=TRUE}
+```{r, echo=TRUE, fig.width=5, fig.height=4}
 test_gam <- mgcv::gam(
   value ~ s(TimeStamp, by = type),
   correlation = corAR1(),
   data = automatic_recognition_tidy,
   method = "REML"
   )
-plot(test_gam)
+# plot(test_gam)
 
 summary(test_gam)
+```
 
+---
+
+# Generalized Additive (Mixed) Models
+
+* Non linear regression
+
+```{r, echo=TRUE, fig.width=12, fig.height=5}
 vis.gam(test_gam,theta=-55,color="heat")
 ```
+
+---
+
+# Generalized Additive (Mixed) Models
 
 * GAMM takes random factors but are very long to process
 
@@ -1213,7 +1248,7 @@ With the generalization of wireless physiological sensors, new projects were lau
 
 # Data processing steps
 
-```{nomnoml}
+```{nomnoml, fig.width=12, fig.height=8}
 #stroke: orange
 #align: center
 
@@ -1240,30 +1275,240 @@ tibble::tribble(
   kableExtra::kable_styling(font_size = 12)
 ```
 
+.pull-left[
+* Artefact removal
+  * Participant suppression
+  * NA value
+  * Spline / Linear approximate
+]
+
+.pull-right[
+```{r out.width = "50%"}
+knitr::include_graphics("./img/artefact.png") 
+```
+]
+
 ---
 
 # 2. Feature Extraction
 
+* Streams directly interpretable
+  * Heart Rate (HR)
+  * Breathing Rate (BR)
+  * Skin Temperature (ST)
+
+* Streans needs feature extraction
+  * Electrodermal Activity (EDA)
+  * Electrocardiogram (ECG)
+
+---
+
+# 2. Feature Extraction of EDA
+
+* EDA decomposition to: 
+  * Skin conductance level (SCL)
+  * Skin conductance response (SCR)
+
+```{r out.width = "100%"}
+knitr::include_graphics("./img/eda.png") 
+```
+
+---
+
+# 2. Feature Extraction of ECG
+
+* ECG decomposition to Heart Rate Variability (HRV)
+* not presented hereafter but can be easily done with {RHRV} package
+
+```{r out.width = "100%"}
+knitr::include_graphics("./img/hrv.png") 
+```
 
 ---
 
 # 3. Streams Sync
 
+* Start/Stop tag selection
+* Frequency synchronization
+
+```{r}
+tibble::tribble(
+  ~Signal, ~`Sample rate`,
+  "Electrocardiogram", "256 Hz",
+  "Heart Rate (HR)", "25.6 Hz",
+  "Breathing Rate (BR)","25.6 Hz",
+  "Accelerometer (ACC - 3 Axis)", "25.6 Hz", 
+  "Skin Temperature (ST)", "0.08 Hz",
+  "Electrodermal Activity (EDA)", "2 Hz"
+  ) %>%
+  knitr::kable(format='html') %>%
+  kableExtra::kable_styling(font_size = 12)
+```
+
+Solutions:
+* Keeping only the common timestamps
+* Extrapolation of the missing between values (Spline)
 
 ---
 
 # 4. Statistical Treatment
 
+* Predicted trend extraction per measure, for example:
+  * Generalized Additive Mixed Model (GAMM)
+
+```{r out.width = "70%"}
+knitr::include_graphics("./img/gamm.png") 
+```
+
 ---
 
-# Predict Arousal from physiological measurement
+# Predict Arousal from physiology
+
+* Libraries
+
+```{r, echo=TRUE}
+library(tidyverse)
+library(zoo)
+library(dygraphs)
+library(mgcv)
+```
+
+* Data 
+
+```{r, echo=TRUE}
+data_HR_sim <- readr::read_csv("https://raw.githubusercontent.com/damien-dupre/data/master/data_HR_sim.csv")
+data_BR_sim <- readr::read_csv("https://raw.githubusercontent.com/damien-dupre/data/master/data_BR_sim.csv")
+data_ST_sim <- readr::read_csv("https://raw.githubusercontent.com/damien-dupre/data/master/data_ST_sim.csv")
+data_EDA_sim <- readr::read_csv("https://raw.githubusercontent.com/damien-dupre/data/master/data_EDA_sim.csv")
+```
+
+---
+
+# Predict Arousal from physiology
+
+* Extract features from HR, BR and ST
+
+```{r, echo=TRUE}
+data_HR <- data_HR_sim %>%
+  dplyr::select(time, Heartrate) %>%
+  dplyr::mutate(physio = "HR") %>%
+  dplyr::rename(value = Heartrate) %>%
+  dplyr::mutate(time_date = as.POSIXct(as.numeric(as.character(time)) / 1000, origin = "1970-01-01", tz = "Europe/London"))
+
+data_BR <- data_BR_sim %>%
+  dplyr::select(time, Breathing.Rate) %>%
+  dplyr::mutate(physio = "BR") %>%
+  dplyr::rename(value = Breathing.Rate) %>%
+  dplyr::mutate(time_date = as.POSIXct(as.numeric(as.character(time)) / 1000, origin = "1970-01-01", tz = "Europe/London"))
+
+data_ST <- data_ST_sim %>%
+  dplyr::select(time, Skin.Temperature) %>%
+  dplyr::mutate(physio = "ST") %>%
+  dplyr::rename(value = Skin.Temperature) %>%
+  dplyr::mutate(time_date = as.POSIXct(as.numeric(as.character(time)) / 1000, origin = "1970-01-01", tz = "Europe/London"))
+```
+
+---
+
+# Predict Arousal from physiology
+
+* Extract features from EDA
+
+```{r, echo=TRUE}
+data_EDA <- data_EDA_sim %>%
+  dplyr::select(time, EDA_100Microsimens) %>%
+  dplyr::mutate(physio = "EDA") %>%
+  dplyr::rename(value = EDA_100Microsimens) %>%
+  dplyr::mutate(time_date = as.POSIXct(
+    as.numeric(as.character(time)) / 1000,
+    origin = "1970-01-01",
+    tz = "Europe/London"
+  ))
+
+data_zoo <- loess(value ~ time, data = data_EDA, span = 0.35)
+data_EDA$SCL <- data_zoo$fitted
+data_EDA$SCR <- data_zoo$residuals
+```
+
+---
+
+# Predict Arousal from physiology
+
+* Stream sync
+
+```{r, echo=TRUE}
+# center scale -----------------------------------------------------------------
+data_HR_zoo <- zoo(data_HR$value, order.by = data_HR$time_date) %>% 
+  scale(center = TRUE, scale = TRUE)
+data_BR_zoo <- zoo(data_BR$value, order.by = data_BR$time_date) %>% 
+  scale(center = TRUE, scale = TRUE)
+data_ST_zoo <- zoo(data_ST$value, order.by = data_ST$time_date) %>% 
+  scale(center = TRUE, scale = TRUE)
+data_SCL_zoo <- zoo(data_EDA$SCL, order.by = data_EDA$time_date) %>% 
+  scale(center = TRUE, scale = TRUE)
+
+# merge and fill ---------------------------------------------------------------
+data_physio <- merge.zoo(
+  data_HR_zoo,
+  data_BR_zoo,
+  data_ST_zoo,
+  data_SCL_zoo
+  )
+
+data_physio <- na.approx(data_physio)
+colnames(data_physio) <- c("HR", "BR", "ST", "SCL")
+```
+
+---
+
+# Predict Arousal from physiology
+
+* Plot raw data
+
+```{r, echo=TRUE, fig.width=12, fig.height=4}
+custom_palette <-
+  c("red", "blue", "orange", "green", "purple")
+
+dygraph(data_physio) %>%
+  dyRangeSelector() %>%
+  dyOptions(colors = custom_palette) %>%
+  dyLegend(width = 500)
+```
+
+---
+
+# Predict Arousal from physiology
+
+* Trend extraction
+
+```{r, echo=TRUE}
+data_physio_tidy <- data_physio %>% 
+  zoo::fortify.zoo() %>% 
+  tidyr::gather(measure, value, -Index) %>% 
+  dplyr::mutate(Index = as.numeric(Index))
+
+gam_physio <- mgcv::gam(
+  value ~ s(Index), 
+  data = data_physio_tidy,  
+  method = "REML", 
+  correlation=corAR1()
+  )
+```
+
+---
+
+# Predict Arousal from physiology
+
+* Trend extraction
+
+```{r, echo=TRUE}
+plot(gam_physio)
+```
 
 ---
 class: inverse, center, middle
 
 # Thanks for your attention!
-
----
 
 
 
