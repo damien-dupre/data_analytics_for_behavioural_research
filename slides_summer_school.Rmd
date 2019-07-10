@@ -12,6 +12,14 @@ output:
       highlightLines: true
       countIncrementalSlides: false
 ---
+<!-- output: -->
+<!--   xaringan::moon_reader: -->
+<!--     css: [default, xaringan-themer.css, metropolis, metropolis-fonts] -->
+<!--     lib_dir: libs -->
+<!--     nature: -->
+<!--       highlightStyle: github -->
+<!--       highlightLines: true -->
+<!--       countIncrementalSlides: false -->
 
 ```{r setup, include = FALSE}
 # general options ----------------------------------------------------------------------
@@ -29,6 +37,13 @@ knitr::opts_chunk$set(
 library(tidyverse)
 library(knitr)
 library(nomnoml)
+```
+
+```{r xaringan-themer, include = FALSE}
+# library(xaringanthemer)
+# mono_light(
+#   base_color = "#F36B2C"
+# )
 ```
 
 # Programme
