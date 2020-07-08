@@ -12,7 +12,7 @@ output:
       highlightLines: true
       countIncrementalSlides: false
 params:
-  eval_rights: TRUE
+  eval_rights: FALSE
 ---
 
 ```{r setup, include = FALSE}
