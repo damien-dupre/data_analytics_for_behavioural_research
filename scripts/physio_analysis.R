@@ -1,6 +1,7 @@
 ################################################################################
 #         Analysis of Physiological Correlates of Emotions  with R             #
 ################################################################################
+# install.packages(c("tidyverse", "zoo", "dygraphs", "mgcv", "here"))
 
 # libraries --------------------------------------------------------------------
 library(tidyverse)
@@ -92,6 +93,3 @@ gam_physio <- gam(
 )
 
 summary(gam_physio)
-
-
-

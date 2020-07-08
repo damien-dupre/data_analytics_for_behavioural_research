@@ -1,6 +1,7 @@
 ################################################################################
 #                       Sentiment Analysis with R                              #
 ################################################################################
+#install.packages(c("tidyverse", "tidytext", "janeaustenr"))
 
 # libraries --------------------------------------------------------------------
 library(tidyverse)
@@ -99,12 +100,3 @@ lm_model <- jane_austen_sentiment %>%
   lm(formula = sentiment ~ book, data = .)
 
 summary(lm_model)
-
-
-
-
-
-
-
-
-
